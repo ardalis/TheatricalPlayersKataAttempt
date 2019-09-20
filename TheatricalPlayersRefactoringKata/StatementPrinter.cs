@@ -13,16 +13,12 @@ namespace TheatricalPlayersRefactoringKata
             var result = string.Format("Statement for {0}\n", invoice.Customer);
             CultureInfo cultureInfo = new CultureInfo("en-US");
 
-            foreach(var perf in invoice.Performances) 
+            foreach(var perf in invoice.Performances)
             {
                 var play = plays[perf.PlayID];
                 var thisAmount = 0;
                 thisAmount += play.CalculateAmount(perf.Audience);
-                
-                // add volume credits
-                volumeCredits += Math.Max(perf.Audience - 30, 0);
-                // add extra credit for every ten comedy attendees
-                if ("comedy" == play.Type) volumeCredits += (int)Math.Floor((decimal)perf.Audience / 5);
+                volumeCredits += play.GetVolumeCredits(perf.Audience);
 
                 // print line for this order
                 result += String.Format(cultureInfo, "  {0}: {1:C} ({2} seats)\n", play.Name, Convert.ToDecimal(thisAmount / 100), perf.Audience);
@@ -32,5 +28,7 @@ namespace TheatricalPlayersRefactoringKata
             result += String.Format("You earned {0} credits\n", volumeCredits);
             return result;
         }
+
+        
     }
 }
