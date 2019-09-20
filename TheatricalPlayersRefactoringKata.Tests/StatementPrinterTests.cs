@@ -20,8 +20,27 @@ namespace TheatricalPlayersRefactoringKata.Tests
             Invoice invoice = new Invoice("BigCo", new List<Performance>{new Performance("hamlet", 55),
                 new Performance("as-like", 35),
                 new Performance("othello", 40)});
-            
+
             StatementPrinter statementPrinter = new StatementPrinter();
+            var result = statementPrinter.Print(invoice, plays);
+
+            Approvals.Verify(result);
+        }
+
+        [Fact]
+        [UseReporter(typeof(DiffReporter))]
+        public void test_statement_html_example()
+        {
+            var plays = new Dictionary<string, Play>();
+            plays.Add("hamlet", Play.CreatePlay("Hamlet", "tragedy"));
+            plays.Add("as-like", Play.CreatePlay("As You Like It", "comedy"));
+            plays.Add("othello", Play.CreatePlay("Othello", "tragedy"));
+
+            Invoice invoice = new Invoice("BigCo", new List<Performance>{new Performance("hamlet", 55),
+                new Performance("as-like", 35),
+                new Performance("othello", 40)});
+
+            StatementPrinter statementPrinter = new StatementPrinter(new HtmlStatementFormatter());
             var result = statementPrinter.Print(invoice, plays);
 
             Approvals.Verify(result);
@@ -36,8 +55,25 @@ namespace TheatricalPlayersRefactoringKata.Tests
 
             Invoice invoice = new Invoice("BigCoII", new List<Performance>{new Performance("henry-v", 53),
                 new Performance("as-like", 55)});
-            
+
             StatementPrinter statementPrinter = new StatementPrinter();
+
+            var result = statementPrinter.Print(invoice, plays);
+
+            Approvals.Verify(result);
+        }
+
+        [Fact]
+        public void test_statement_html_with_new_play_types()
+        {
+            var plays = new Dictionary<string, Play>();
+            plays.Add("henry-v", Play.CreatePlay("Henry V", "history"));
+            plays.Add("as-like", Play.CreatePlay("As You Like It", "pastoral"));
+
+            Invoice invoice = new Invoice("BigCoII", new List<Performance>{new Performance("henry-v", 53),
+                new Performance("as-like", 55)});
+
+            StatementPrinter statementPrinter = new StatementPrinter(new HtmlStatementFormatter());
 
             var result = statementPrinter.Print(invoice, plays);
 

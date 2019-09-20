@@ -1,4 +1,6 @@
-﻿namespace TheatricalPlayersRefactoringKata
+﻿using System;
+
+namespace TheatricalPlayersRefactoringKata
 {
     public class ComedyPlay : Play
     {
@@ -15,6 +17,15 @@
             }
             thisAmount += 300 * audience;
             return thisAmount;
+        }
+
+        public override int GetVolumeCredits(int audience)
+        {
+            int credits = base.GetVolumeCredits(audience);
+
+            credits += (int)Math.Floor((decimal)audience / 5);
+
+            return credits;
         }
     }
 }
