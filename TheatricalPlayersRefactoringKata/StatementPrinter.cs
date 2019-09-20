@@ -1,47 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
-using System.Text;
 
 namespace TheatricalPlayersRefactoringKata
 {
-    public interface IStatementFormatter
-    {
-        void AppendLine(string text);
-
-        string GetResult();
-    }
-
-    public class TextStatementFormatter : IStatementFormatter
-    {
-        StringBuilder _sb = new StringBuilder();
-
-        public void AppendLine(string text)
-        {
-            _sb.AppendLine(text);
-        }
-
-        public string GetResult()
-        {
-            return _sb.ToString();
-        }
-    }
-
-    public class HtmlStatementFormatter : IStatementFormatter
-    {
-        StringBuilder _sb = new StringBuilder();
-
-        public void AppendLine(string text)
-        {
-            _sb.AppendLine(text + "<br />");
-        }
-
-        public string GetResult()
-        {
-            return _sb.ToString();
-        }
-    }
-
     public class StatementPrinter
     {
         private readonly IStatementFormatter _formatter;
@@ -60,9 +21,7 @@ namespace TheatricalPlayersRefactoringKata
             var totalAmount = 0;
             var volumeCredits = 0;
 
-            _formatter.AppendLine(string.Format("Statement for {0}", invoice.Customer));
-
-                CultureInfo cultureInfo = new CultureInfo("en-US");
+            _formatter.AppendLine($"Statement for {invoice.Customer}");
 
             foreach (var perf in invoice.Performances)
             {
@@ -72,15 +31,13 @@ namespace TheatricalPlayersRefactoringKata
                 volumeCredits += play.GetVolumeCredits(perf.Audience);
 
                 // print line for this order
-                _formatter.AppendLine(String.Format(cultureInfo, "  {0}: {1:C} ({2} seats)", play.Name, Convert.ToDecimal(thisAmount / 100), perf.Audience));
+                _formatter.AppendLine($"  {play.Name}: {Convert.ToDecimal(thisAmount / 100):C} ({perf.Audience} seats)");
                 totalAmount += thisAmount;
             }
 
-            _formatter.AppendLine(String.Format(cultureInfo, "Amount owed is {0:C}", Convert.ToDecimal(totalAmount / 100)));
-            _formatter.AppendLine(String.Format("You earned {0} credits", volumeCredits));
+            _formatter.AppendLine($"Amount owed is {Convert.ToDecimal(totalAmount / 100):C}");
+            _formatter.AppendLine($"You earned {volumeCredits} credits");
             return _formatter.GetResult();
         }
-
-
     }
 }
