@@ -2,58 +2,34 @@ using System;
 
 namespace TheatricalPlayersRefactoringKata
 {
-    public class Play
+    public abstract class Play
     {
-        private string _name;
-        private string _type;
+        public string Name { get; }
+        public string Type { get; }
 
-        public string Name { get => _name; set => _name = value; }
-        public string Type { get => _type; set => _type = value; }
-
-        public Play(string name, string type) {
-            this._name = name;
-            this._type = type;
+        protected Play(string name, string type) {
+            this.Name = name;
+            this.Type = type;
         }
 
-        internal int CalculateAmount(int audience)
+        public static Play CreatePlay(string name, string type)
         {
-            int thisAmount = 0;
-            switch (Type)
+            switch (type)
             {
-                case "tragedy":
-                    thisAmount = 40000;
-                    if (audience > 30)
-                    {
-                        thisAmount += 1000 * (audience - 30);
-                    }
-                    break;
-                case "history":
-                    thisAmount = 20000;
-                    if (audience > 35)
-                    {
-                        thisAmount += 1000 * (audience - 35);
-                    }
-                    break;
                 case "pastoral":
-                    thisAmount = 45000;
-                    if (audience > 30)
-                    {
-                        thisAmount += 1000 * (audience - 30);
-                    }
-                    break;
+                    return new PastoralPlay(name);
+                case "tragedy":
+                    return new TragedyPlay(name);
+                case "history":
+                    return new HistoryPlay(name);
                 case "comedy":
-                    thisAmount = 30000;
-                    if (audience > 20)
-                    {
-                        thisAmount += 10000 + 500 * (audience - 20);
-                    }
-                    thisAmount += 300 * audience;
-                    break;
+                    return new ComedyPlay(name);
                 default:
-                    throw new Exception("unknown type: " + Type);
+                    throw new Exception("unknown type: " + type);
             }
-            return thisAmount;
         }
+
+        internal abstract int CalculateAmount(int audience);
 
         public int GetVolumeCredits(int audience)
         {
